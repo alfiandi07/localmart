@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:localmart/localmart.dart/login.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class homepage extends StatelessWidget {
   const homepage({super.key});
@@ -45,85 +47,127 @@ class homepage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Container(
-                    height: 200,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(32, 52, 48, 48),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(color: Colors.grey, width: 1.0),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Container(
-                    height: 200,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(32, 52, 48, 48),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(color: Colors.grey, width: 1.0),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Container(
-                    height: 200,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(32, 52, 48, 48),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(color: Colors.grey, width: 1.0),
-                    ),
-                  ),
-                ],
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200.0,
+                aspectRatio: 16 / 9,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 5),
               ),
+              items:
+                  [
+                    Image.network(
+                      'https://i.wfolio.ru/x/LATXGxMAvg4T0aCx3BMAPcoPN8LBuMrG/WUxqXOvhFPl7GHv-GzWkMqqXeqAxaS7S/lYNN2xlHOX_lMURN2UM2Nho8pSoSar4J/RFFy_MztidZlI_Qh7_IJ5RqZjrwJo0QB.jpg?utm_source=chatgpt.com',
+                    ),
+                    toString(),
+                    Image.network(
+                      'https://shopee.co.id/product/1701656273/42028183238?utm_term=SP_Search_Shopping_WomenBags_All_L1WomenBags&utm_campaign=D05_ALL_PIN_Shopping_SP_Search_All_WomenBagsWomenShoes_All&item_id=42028183238&utm_medium=cpc&utm_source=Pinterest&utm_content=4260609520004&pp=0&epik=dj0yJnU9V3VJMk9LZU11ZVNZdjVGWjkxQThqWS1mWm5JdVM1aTAmcD0xJm49anhYWnZKWkEwQ24zZndwQVpqTnpRQSZ0PUFBQUFBR3A4R1VZ',
+                    ),
+                    3,
+                    4,
+                    5,
+                  ].map((imageUrl) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          decoration: BoxDecoration(color: Colors.amber),
+                          child: Text(
+                            'text $imageUrl',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
             ),
             SizedBox(height: 30, width: 10),
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(72, 57, 56, 56),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(72, 57, 56, 56),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    child: Icon(Icons.access_alarm_outlined),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(72, 57, 56, 56),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    child: Icon(Icons.shop_2),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(72, 57, 56, 56),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ],
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+
+                // Jarak antar kotak
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4, // 4 kotak dalam 1 baris
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 5,
+                  childAspectRatio: 0.75,
+                ),
+
+                itemCount: 8,
+
+                itemBuilder: (context, index) {
+                  final kategori = [
+                    {'icon': Icons.phone_android, 'text': 'Elektronik'},
+                    {'icon': Icons.checkroom, 'text': 'Pakaian Pria'},
+                    {'icon': Icons.watch, 'text': 'Aksesoris'},
+                    {'icon': Icons.toys, 'text': 'Mainan Anak'},
+                    {'icon': Icons.search, 'text': 'Kecantikan'},
+                    {'icon': Icons.add_a_photo, 'text': 'Atasan Wanita'},
+                    {'icon': Icons.backpack, 'text': 'Tas Pria'},
+                    {'icon': Icons.category, 'text': 'lainnya'},
+                  ];
+
+                  return Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HalamanLogin(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(70, 70),
+                          padding: EdgeInsets.zero,
+                          elevation: 0,
+                          backgroundColor: const Color.fromARGB(
+                            223,
+                            202,
+                            197,
+                            197,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 200, 196, 202),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            kategori[index]['icon'] as IconData,
+                            color: const Color.fromARGB(255, 43, 100, 193),
+                            size: 30,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      Text(
+                        kategori[index]['text'] as String,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
