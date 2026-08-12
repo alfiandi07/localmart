@@ -43,7 +43,7 @@ class homepage extends StatelessWidget {
                 ),
                 hintText: 'Cari di LocalMart',
                 prefixIcon: Icon(Icons.search),
-                fillColor: const Color.fromARGB(207, 108, 102, 102),
+                fillColor: Color.fromARGB(207, 108, 102, 102),
               ),
             ),
             SizedBox(height: 10),
@@ -52,31 +52,28 @@ class homepage extends StatelessWidget {
                 height: 200.0,
                 aspectRatio: 16 / 9,
                 autoPlay: true,
-                autoPlayInterval: Duration(seconds: 5),
+                autoPlayInterval: Duration(seconds: 3),
               ),
+
               items:
                   [
-                    Image.network(
-                      'https://i.wfolio.ru/x/LATXGxMAvg4T0aCx3BMAPcoPN8LBuMrG/WUxqXOvhFPl7GHv-GzWkMqqXeqAxaS7S/lYNN2xlHOX_lMURN2UM2Nho8pSoSar4J/RFFy_MztidZlI_Qh7_IJ5RqZjrwJo0QB.jpg?utm_source=chatgpt.com',
-                    ),
-                    toString(),
-                    Image.network(
-                      'https://shopee.co.id/product/1701656273/42028183238?utm_term=SP_Search_Shopping_WomenBags_All_L1WomenBags&utm_campaign=D05_ALL_PIN_Shopping_SP_Search_All_WomenBagsWomenShoes_All&item_id=42028183238&utm_medium=cpc&utm_source=Pinterest&utm_content=4260609520004&pp=0&epik=dj0yJnU9V3VJMk9LZU11ZVNZdjVGWjkxQThqWS1mWm5JdVM1aTAmcD0xJm49anhYWnZKWkEwQ24zZndwQVpqTnpRQSZ0PUFBQUFBR3A4R1VZ',
-                    ),
-                    3,
-                    4,
-                    5,
-                  ].map((imageUrl) {
+                    'assets/images/TasWanita.jpg',
+                    'assets/images/The Five Step Essentials Skincare Kit.jpg',
+                    'assets/images/Skórzany plecak na spotkanie biznesowe.jpg',
+                    'assets/images/tasperempuan.jpg',
+                    'assets/images/Old money dressing.jpg',
+                  ].map((imagePath) {
                     return Builder(
                       builder: (BuildContext context) {
                         return Container(
                           width: MediaQuery.of(context).size.width,
-                          margin: EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(color: Colors.amber),
-                          child: Text(
-                            'text $imageUrl',
-                            style: TextStyle(fontSize: 16.0),
+                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                           ),
+                          clipBehavior: Clip.antiAlias,
+
+                          child: Image.asset(imagePath, fit: BoxFit.cover),
                         );
                       },
                     );
