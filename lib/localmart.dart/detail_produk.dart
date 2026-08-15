@@ -41,7 +41,10 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1B24)),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Color(0xFF1A1B24),
+                    ),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Text(
@@ -55,8 +58,10 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.share_outlined,
-                            color: Color(0xFF1A1B24)),
+                        icon: const Icon(
+                          Icons.share_outlined,
+                          color: Color(0xFF1A1B24),
+                        ),
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -69,7 +74,9 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                       IconButton(
                         icon: Icon(
                           _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: _isFavorite ? Colors.redAccent : const Color(0xFF1A1B24),
+                          color: _isFavorite
+                              ? Colors.redAccent
+                              : const Color(0xFF1A1B24),
                         ),
                         onPressed: () {
                           setState(() {
@@ -131,7 +138,9 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                               left: 16,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: product.badge!.startsWith('-')
                                       ? Colors.redAccent
@@ -164,7 +173,9 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFE8F5E9),
                                   borderRadius: BorderRadius.circular(12),
@@ -191,7 +202,9 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFEEECF9),
                                   borderRadius: BorderRadius.circular(12),
@@ -224,8 +237,11 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                           // Rating & Sold Info
                           Row(
                             children: [
-                              const Icon(Icons.star,
-                                  size: 18, color: Colors.amber),
+                              const Icon(
+                                Icons.star,
+                                size: 18,
+                                color: Colors.amber,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 '${product.rating}',
@@ -283,7 +299,9 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFEEECF9)),
+                              border: Border.all(
+                                color: const Color(0xFFEEECF9),
+                              ),
                             ),
                             child: Row(
                               children: [
@@ -450,13 +468,16 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.add_shopping_cart,
-                          color: primaryColor),
+                      icon: const Icon(
+                        Icons.add_shopping_cart,
+                        color: primaryColor,
+                      ),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                                '${product.name} (${_quantity}x) ditambahkan ke keranjang!'),
+                              '${product.name} (${_quantity}x) ditambahkan ke keranjang!',
+                            ),
                             backgroundColor: const Color(0xFF1B5E20),
                           ),
                         );
@@ -471,11 +492,14 @@ class _HalamanDetailProdukState extends State<HalamanDetailProduk> {
                       height: 52,
                       child: ElevatedButton(
                         onPressed: () {
-                          final totalPrice = _formatPrice(product.price * _quantity);
+                          final totalPrice = _formatPrice(
+                            product.price * _quantity,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                  'Pesanan ${product.name} (${_quantity}x) berhasil dibuat ($totalPrice)!'),
+                                'Pesanan ${product.name} (${_quantity}x) berhasil dibuat ($totalPrice)!',
+                              ),
                               backgroundColor: primaryColor,
                             ),
                           );
