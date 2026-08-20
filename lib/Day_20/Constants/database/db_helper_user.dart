@@ -73,6 +73,8 @@ class UserDbHelper {
     required String email,
     required String phone,
     required String address,
+    String? photoPath,
+    bool isClearPhoto = false,
   }) {
     if (currentUser == null) return;
 
@@ -85,6 +87,7 @@ class UserDbHelper {
       password: currentUser!.password,
       address: address,
       role: currentUser!.role,
+      photoPath: isClearPhoto ? null : (photoPath ?? currentUser!.photoPath),
     );
 
     if (index != -1) {

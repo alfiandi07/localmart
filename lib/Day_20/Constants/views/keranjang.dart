@@ -42,7 +42,7 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
   @override
   Widget build(BuildContext context) {
     int subtotal = hitungSubtotal();
-    int biayaPengiriman = widget.keranjang.isNotEmpty ? 15000 : 0;
+    int biayaPengiriman = widget.keranjang.isNotEmpty ? 1000 : 0;
     int totalHarga = subtotal + biayaPengiriman;
 
     return Scaffold(

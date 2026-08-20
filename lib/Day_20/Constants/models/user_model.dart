@@ -8,6 +8,7 @@ class UserModel {
   final String password;
   final String address;
   final String role;
+  final String? photoPath;
 
   UserModel({
     required this.id,
@@ -17,6 +18,7 @@ class UserModel {
     required this.password,
     this.address = 'Jl. Melati No. 45, Bandung',
     this.role = 'Pelanggan',
+    this.photoPath,
   });
 
   // Factory constructor konversi dari Map
@@ -29,6 +31,7 @@ class UserModel {
       password: map['password'] ?? '',
       address: map['address'] ?? 'Jl. Melati No. 45, Bandung',
       role: map['role'] ?? 'Pelanggan',
+      photoPath: map['photoPath'],
     );
   }
 
@@ -42,6 +45,7 @@ class UserModel {
       'password': password,
       'address': address,
       'role': role,
+      'photoPath': photoPath,
     };
   }
 }

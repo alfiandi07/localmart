@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Segar dari sumbernya, langsung ke Anda.',
+                  'Menjangkau pasar yang lebih luas.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
@@ -161,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
 
                       // Input Email / No. Telepon
                       Text(
-                        'EMAIL ATAU NO. TELEPON',
+                        'EMAIL ',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,

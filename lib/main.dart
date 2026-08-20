@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localmart/localmart.dart/onboarding.dart';
+import 'package:localmart/Day_20/Constants/views/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const OnboardingPage(),
+      home: const LoginPage(),
     );
   }
 }

@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:localmart/Day_20/Constants/database/data_produkkeranjang.dart';
 import 'package:localmart/Day_20/Constants/database/db_helper_user.dart';
 import 'package:localmart/Day_20/Constants/models/user_model.dart';
 import 'package:localmart/Day_20/Constants/views/daftarakun.dart';
 import 'package:localmart/Day_20/Constants/views/edit_profil.dart';
+import 'package:localmart/Day_20/Constants/views/info_apk.dart';
 import 'package:localmart/Day_20/Constants/views/katalog.dart';
 import 'package:localmart/Day_20/Constants/views/keranjang.dart';
 import 'package:localmart/Day_20/Constants/views/login.dart';
@@ -22,7 +24,7 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     const Color primaryColor = Color(0xFF0025A5);
-    const Color backgroundColor = Color(0xFFFCF9F8);
+    const Color backgroundColor = Color.fromARGB(255, 123, 142, 151);
 
     // Ambil data user aktif dari database (null jika belum login)
     final UserModel? currentUser = UserDbHelper.currentUser;
@@ -41,16 +43,6 @@ class _ProfilPageState extends State<ProfilPage> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0.5,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share_outlined, color: primaryColor),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: primaryColor),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -94,22 +86,42 @@ class _ProfilPageState extends State<ProfilPage> {
                         Row(
                           children: [
                             // Avatar Profile Image
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: primaryColor.withValues(alpha: 0.1),
-                                border: Border.all(
-                                  color: primaryColor,
-                                  width: 2,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.person,
-                                size: 40,
-                                color: primaryColor,
-                              ),
+                            Builder(
+                              builder: (context) {
+                                final String? photoPath =
+                                    currentUser?.photoPath;
+                                final bool hasPhoto =
+                                    photoPath != null &&
+                                    photoPath.isNotEmpty &&
+                                    File(photoPath).existsSync();
+
+                                return Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: primaryColor.withValues(alpha: 0.1),
+                                    border: Border.all(
+                                      color: primaryColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: ClipOval(
+                                    child: hasPhoto
+                                        ? Image.file(
+                                            File(photoPath),
+                                            width: 70,
+                                            height: 70,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Icon(
+                                            Icons.person,
+                                            size: 40,
+                                            color: primaryColor,
+                                          ),
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(width: 14),
 
@@ -191,14 +203,17 @@ class _ProfilPageState extends State<ProfilPage> {
                                       setState(() {});
                                     }
                                   },
-                                  icon: const Icon(Icons.edit_outlined,
-                                      size: 16),
+                                  icon: const Icon(
+                                    Icons.edit_outlined,
+                                    size: 16,
+                                  ),
                                   label: const Text('Edit Profil'),
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: primaryColor,
                                     side: BorderSide(
-                                      color:
-                                          primaryColor.withValues(alpha: 0.5),
+                                      color: primaryColor.withValues(
+                                        alpha: 0.5,
+                                      ),
                                     ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -225,15 +240,23 @@ class _ProfilPageState extends State<ProfilPage> {
                                       : Icons.login,
                                   size: 16,
                                 ),
-                                label: Text(currentUser != null
-                                    ? 'Keluar'
-                                    : 'Masuk / Login'),
+                                label: Text(
+                                  currentUser != null
+                                      ? 'Keluar'
+                                      : 'Masuk / Login',
+                                ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: primaryColor,
+                                  backgroundColor: const Color.fromARGB(
+                                    255,
+                                    245,
+                                    27,
+                                    27,
+                                  ),
                                   foregroundColor: Colors.white,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
+                                    side: BorderSide(color: Colors.black),
                                   ),
                                 ),
                               ),
@@ -278,8 +301,9 @@ class _ProfilPageState extends State<ProfilPage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color:
-                                _selectedTab == 0 ? Colors.white : Colors.grey,
+                            color: _selectedTab == 0
+                                ? Colors.white
+                                : Colors.grey,
                           ),
                         ),
                       ),
@@ -305,8 +329,9 @@ class _ProfilPageState extends State<ProfilPage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color:
-                                _selectedTab == 1 ? Colors.white : Colors.grey,
+                            color: _selectedTab == 1
+                                ? Colors.white
+                                : Colors.grey,
                           ),
                         ),
                       ),
@@ -478,7 +503,12 @@ class _ProfilPageState extends State<ProfilPage> {
               icon: Icons.info_outline,
               title: 'Info Aplikasi',
               subtitle: 'Informasi versi & tentang aplikasi LocalMart',
-              onTap: () {},
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const InfoApkPage()),
+                );
+              },
             ),
           ],
         ),
