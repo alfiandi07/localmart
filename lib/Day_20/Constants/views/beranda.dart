@@ -46,7 +46,8 @@ class _BerandaState extends State<Beranda> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => KeranjangBelanja(keranjang: keranjangBelanjaData),
+                  builder: (context) =>
+                      KeranjangBelanja(keranjang: keranjangBelanjaData),
                 ),
               );
             },
@@ -261,7 +262,9 @@ class _BerandaState extends State<Beranda> {
                               isFavorite[index]
                                   ? Icons.favorite
                                   : Icons.favorite_border,
-                              color: isFavorite[index] ? Colors.red : Colors.grey,
+                              color: isFavorite[index]
+                                  ? Colors.red
+                                  : Colors.grey,
                             ),
                           ),
                         ), // Container
