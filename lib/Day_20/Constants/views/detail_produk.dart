@@ -188,7 +188,7 @@ class _DetailProdukState extends State<DetailProduk> {
                             ),
                             IconButton(
                               onPressed: () {
-                                if (quantity < 10) {
+                                if (quantity < 100) {
                                   setState(() {
                                     quantity++;
                                   });

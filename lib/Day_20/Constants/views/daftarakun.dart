@@ -11,7 +11,7 @@ class DaftarAkun extends StatefulWidget {
 }
 
 class _DaftarAkunState extends State<DaftarAkun> {
-  late List<UserModel> users;
+  List<UserModel> users = [];
 
   @override
   void initState() {
@@ -19,9 +19,11 @@ class _DaftarAkunState extends State<DaftarAkun> {
     _loadUsers();
   }
 
-  void _loadUsers() {
+  void _loadUsers() async {
+    final list = await UserDbHelper.getUsers();
+    if (!mounted) return;
     setState(() {
-      users = UserDbHelper.getUsers();
+      users = list;
     });
   }
 
@@ -38,10 +40,11 @@ class _DaftarAkunState extends State<DaftarAkun> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              UserDbHelper.deleteUser(id);
+              await UserDbHelper.deleteUser(id);
               _loadUsers();
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Akun "$name" berhasil dihapus.')),
               );

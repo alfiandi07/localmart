@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:localmart/Day_20/Constants/views/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

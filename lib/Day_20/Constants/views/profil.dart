@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:localmart/Day_20/Constants/database/data_produkkeranjang.dart';
 import 'package:localmart/Day_20/Constants/database/db_helper_user.dart';
 import 'package:localmart/Day_20/Constants/models/user_model.dart';
-import 'package:localmart/Day_20/Constants/views/daftarakun.dart';
 import 'package:localmart/Day_20/Constants/views/edit_profil.dart';
 import 'package:localmart/Day_20/Constants/views/info_apk.dart';
-import 'package:localmart/Day_20/Constants/views/katalog.dart';
 import 'package:localmart/Day_20/Constants/views/keranjang.dart';
 import 'package:localmart/Day_20/Constants/views/login.dart';
 import 'package:localmart/Day_20/Constants/views/pesanan_saya.dart';
@@ -24,7 +22,7 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     const Color primaryColor = Color(0xFF0025A5);
-    const Color backgroundColor = Color.fromARGB(255, 123, 142, 151);
+    const Color backgroundColor = Color.fromARGB(255, 249, 250, 250);
 
     // Ambil data user aktif dari database (null jika belum login)
     final UserModel? currentUser = UserDbHelper.currentUser;
@@ -32,6 +30,7 @@ class _ProfilPageState extends State<ProfilPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Profil Saya',
           style: TextStyle(
@@ -475,30 +474,10 @@ class _ProfilPageState extends State<ProfilPage> {
               icon: Icons.favorite_outline,
               title: 'Favorit Saya',
               subtitle: 'Daftar produk yang Anda sukai',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const KatalogProduct(kategori: 'semua'),
-                  ),
-                );
-              },
+              onTap: () {},
             ),
             const Divider(height: 1),
-            _buildMenuItem(
-              icon: Icons.people_outline,
-              title: 'Daftar Akun Terdaftar',
-              subtitle: 'Kelola & lihat seluruh akun terdaftar',
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DaftarAkun()),
-                );
-                setState(() {});
-              },
-            ),
-            const Divider(height: 30),
+
             _buildMenuItem(
               icon: Icons.info_outline,
               title: 'Info Aplikasi',

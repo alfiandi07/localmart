@@ -24,13 +24,13 @@ class _EditProfilState extends State<EditProfil> {
   @override
   void initState() {
     super.initState();
-    final user = UserDbHelper.currentUser ?? UserDbHelper.getUsers().first;
-    _namaController = TextEditingController(text: user.name);
-    _emailController = TextEditingController(text: user.email);
-    _phoneController = TextEditingController(text: user.phone);
-    _alamatController = TextEditingController(text: user.address);
+    final user = UserDbHelper.currentUser;
+    _namaController = TextEditingController(text: user?.name ?? '');
+    _emailController = TextEditingController(text: user?.email ?? '');
+    _phoneController = TextEditingController(text: user?.phone ?? '');
+    _alamatController = TextEditingController(text: user?.address ?? '');
 
-    if (user.photoPath != null && user.photoPath!.isNotEmpty) {
+    if (user?.photoPath != null && user!.photoPath!.isNotEmpty) {
       File savedFile = File(user.photoPath!);
       if (savedFile.existsSync()) {
         _imageFile = savedFile;
@@ -193,7 +193,7 @@ class _EditProfilState extends State<EditProfil> {
     );
   }
 
-  void _simpanPerubahan() {
+  void _simpanPerubahan() async {
     String name = _namaController.text.trim();
     String email = _emailController.text.trim();
     String phone = _phoneController.text.trim();
@@ -209,7 +209,7 @@ class _EditProfilState extends State<EditProfil> {
       return;
     }
 
-    UserDbHelper.updateCurrentUser(
+    await UserDbHelper.updateCurrentUser(
       name: name,
       email: email,
       phone: phone,
@@ -217,6 +217,8 @@ class _EditProfilState extends State<EditProfil> {
       photoPath: _imageFile?.path,
       isClearPhoto: _isPhotoRemoved,
     );
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

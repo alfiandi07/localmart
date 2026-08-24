@@ -50,8 +50,10 @@ class _RegisterAkunState extends State<RegisterAkun> {
     }
 
     if (!_agreeTerms) {
-      _showSnackBar('Anda harus menyetujui Syarat dan Ketentuan!',
-          isError: true);
+      _showSnackBar(
+        'Anda harus menyetujui Syarat dan Ketentuan!',
+        isError: true,
+      );
       return;
     }
 
@@ -59,29 +61,39 @@ class _RegisterAkunState extends State<RegisterAkun> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 600));
+    try {
+      await Future.delayed(const Duration(milliseconds: 600));
 
-    bool success = UserDbHelper.registerUser(
-      name: name,
-      email: email,
-      phone: phone,
-      password: password,
-    );
-
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (success) {
-      _showSnackBar('Pendaftaran berhasil! Silakan masuk ke akun Anda.');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+      bool success = await UserDbHelper.registerUser(
+        name: name,
+        email: email,
+        phone: phone,
+        password: password,
       );
-    } else {
-      _showSnackBar('Email sudah terdaftar. Gunakan email lain!',
-          isError: true);
+
+      if (!mounted) return;
+
+      if (success) {
+        _showSnackBar('Pendaftaran berhasil! Silakan masuk ke akun Anda.');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      } else {
+        _showSnackBar(
+          'Email sudah terdaftar. Gunakan email lain!',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showSnackBar('Terjadi kesalahan: $e', isError: true);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -387,8 +399,10 @@ class _RegisterAkunState extends State<RegisterAkun> {
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: const Color(0xFFF8F9FE),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade300),

@@ -11,6 +11,43 @@ class KeranjangBelanja extends StatefulWidget {
 }
 
 class _KeranjangBelanjaState extends State<KeranjangBelanja> {
+  Set<Map<String, dynamic>>? _selectedItems;
+
+  Set<Map<String, dynamic>> get selectedItems {
+    _selectedItems ??= Set.from(widget.keranjang);
+    return _selectedItems!;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedItems = Set.from(widget.keranjang);
+  }
+
+  bool get _isAllSelected =>
+      widget.keranjang.isNotEmpty &&
+      selectedItems.length == widget.keranjang.length;
+
+  void _toggleSelectAll(bool? value) {
+    setState(() {
+      if (value == true) {
+        _selectedItems = Set.from(widget.keranjang);
+      } else {
+        selectedItems.clear();
+      }
+    });
+  }
+
+  void _toggleSelectItem(Map<String, dynamic> item, bool? value) {
+    setState(() {
+      if (value == true) {
+        selectedItems.add(item);
+      } else {
+        selectedItems.remove(item);
+      }
+    });
+  }
+
   void tambahJumlah(int index) {
     setState(() {
       widget.keranjang[index]['quantity'] =
@@ -30,11 +67,13 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
   int hitungSubtotal() {
     int subtotal = 0;
     for (var item in widget.keranjang) {
-      int harga = parseHarga(item['price']?.toString() ?? '0');
-      int qty = item['quantity'] is int
-          ? item['quantity']
-          : (int.tryParse(item['quantity']?.toString() ?? '1') ?? 1);
-      subtotal += harga * qty;
+      if (selectedItems.contains(item)) {
+        int harga = parseHarga(item['price']?.toString() ?? '0');
+        int qty = item['quantity'] is int
+            ? item['quantity']
+            : (int.tryParse(item['quantity']?.toString() ?? '1') ?? 1);
+        subtotal += harga * qty;
+      }
     }
     return subtotal;
   }
@@ -42,12 +81,12 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
   @override
   Widget build(BuildContext context) {
     int subtotal = hitungSubtotal();
-    int biayaPengiriman = widget.keranjang.isNotEmpty ? 1000 : 0;
+    int biayaPengiriman = selectedItems.isNotEmpty ? 1000 : 0;
     int totalHarga = subtotal + biayaPengiriman;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Keranjang Belanja',
           style: TextStyle(color: Color(0xFF0025A5)),
         ),
@@ -73,6 +112,32 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
             )
           : Column(
               children: [
+                // Option Pilih Semua
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: _isAllSelected,
+                        activeColor: const Color(0xFF0025A5),
+                        onChanged: _toggleSelectAll,
+                      ),
+                      Text(
+                        'Pilih Semua (${selectedItems.length}/${widget.keranjang.length})',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+
                 Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
@@ -82,6 +147,7 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
                       int hargaSatuan = parseHarga(product['price'] ?? '0');
                       int qty = product['quantity'] ?? 1;
                       int totalProductPrice = hargaSatuan * qty;
+                      bool isSelected = selectedItems.contains(product);
 
                       return Card(
                         elevation: 2,
@@ -90,16 +156,27 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 8,
+                          ),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              // Checkbox Pilihan Produk
+                              Checkbox(
+                                value: isSelected,
+                                activeColor: const Color(0xFF0025A5),
+                                onChanged: (bool? val) {
+                                  _toggleSelectItem(product, val);
+                                },
+                              ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.asset(
                                   product['image'],
-                                  width: 90,
-                                  height: 90,
+                                  width: 80,
+                                  height: 80,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -209,7 +286,10 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
                               IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    widget.keranjang.removeAt(index);
+                                    final removed = widget.keranjang.removeAt(
+                                      index,
+                                    );
+                                    selectedItems.remove(removed);
                                   });
                                 },
                                 icon: const Icon(
@@ -227,7 +307,7 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
 
                 // Rincian Harga & Subtotal Section
                 Container(
-                  padding: const EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -257,7 +337,7 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Subtotal Produk',
+                            'Subtotal Produk (${selectedItems.length} item)',
                             style: TextStyle(color: Colors.grey.shade700),
                           ),
                           Text(
@@ -309,16 +389,18 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Proses Checkout Total: ${formatRupiah(totalHarga)}',
-                                ),
-                                backgroundColor: const Color(0xFF0025A5),
-                              ),
-                            );
-                          },
+                          onPressed: selectedItems.isEmpty
+                              ? null
+                              : () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Proses Checkout ${selectedItems.length} Produk (Total: ${formatRupiah(totalHarga)})',
+                                      ),
+                                      backgroundColor: const Color(0xFF0025A5),
+                                    ),
+                                  );
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0025A5),
                             foregroundColor: Colors.white,
@@ -326,9 +408,11 @@ class _KeranjangBelanjaState extends State<KeranjangBelanja> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
-                            'Beli / Checkout',
-                            style: TextStyle(
+                          child: Text(
+                            selectedItems.isEmpty
+                                ? 'Pilih Produk Terlebih Dahulu'
+                                : 'Beli / Checkout (${selectedItems.length})',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),

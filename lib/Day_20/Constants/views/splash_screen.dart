@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF0025A5);
+    const Color primaryColor = Color.fromARGB(255, 246, 246, 247);
     const Color secondaryColor = Color(0xFF001766);
 
     return Scaffold(
@@ -93,7 +93,7 @@ class _SplashScreenState extends State<SplashScreen>
                       // Logo Kustom LocalMart
                       const LocalMartLogoWidget(
                         size: 110,
-                        backgroundColor: Colors.white,
+                        backgroundColor: secondaryColor,
                         bagColor: primaryColor,
                       ),
                       const SizedBox(height: 24),

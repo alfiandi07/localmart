@@ -1,37 +1,76 @@
 import 'package:localmart/Day_20/Constants/models/user_model.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-// Database Helper & Dynamic User Data Store LocalMart
+// Database Helper & Dynamic User Data Store LocalMart menggunakan SQLite
 class UserDbHelper {
   UserDbHelper._();
 
-  // List Database Akun Pengguna Terdaftar
-  static final List<UserModel> _userDatabase = [];
+  static Database? _database;
 
   // User Aktif yang Sedang Login (Default null saat aplikasi belum login)
   static UserModel? currentUser;
 
-  // Mendapatkan semua daftar akun terdaftar
-  static List<UserModel> getUsers() {
-    return List.unmodifiable(_userDatabase);
+  // Inisialisasi / Ambil instance Database SQLite
+  static Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
   }
 
-  // Pendaftaran Akun Baru (Register)
-  static bool registerUser({
+  static Future<Database> _initDatabase() async {
+    String dbPath = await getDatabasesPath();
+    String path = join(dbPath, 'localmart_users.db');
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE users (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            phone TEXT NOT NULL,
+            password TEXT NOT NULL,
+            address TEXT NOT NULL,
+            role TEXT NOT NULL,
+            photoPath TEXT
+          )
+        ''');
+      },
+    );
+  }
+
+  // Mendapatkan semua daftar akun terdaftar dari SQLite
+  static Future<List<UserModel>> getUsers() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return maps.map((map) => UserModel.fromMap(map)).toList();
+  }
+
+  // Pendaftaran Akun Baru (Register) ke SQLite
+  static Future<bool> registerUser({
     required String name,
     required String email,
     required String phone,
     required String password,
     String address = 'Jl. Melati No. 45, Bandung',
-  }) {
+  }) async {
+    final db = await database;
+
     // Cek apakah email sudah terdaftar
-    bool isExist = _userDatabase.any(
-      (user) => user.email.toLowerCase() == email.toLowerCase(),
+    final List<Map<String, dynamic>> existing = await db.query(
+      'users',
+      where: 'LOWER(email) = ?',
+      whereArgs: [email.toLowerCase()],
     );
-    if (isExist) {
+
+    if (existing.isNotEmpty) {
       return false; // Gagal, email sudah terdaftar
     }
 
-    String newId = 'USR-00${_userDatabase.length + 1}';
+    final allUsers = await getUsers();
+    String newId = 'USR-00${allUsers.length + 1}';
     UserModel newUser = UserModel(
       id: newId,
       name: name,
@@ -42,43 +81,45 @@ class UserDbHelper {
       role: 'Member Baru',
     );
 
-    _userDatabase.add(newUser);
+    await db.insert('users', newUser.toMap());
     currentUser = newUser; // Set sebagai user aktif yang baru mendaftar
     return true; // Berhasil mendaftar
   }
 
-  // Autentikasi Login Akun (Hanya akun terdaftar yang berhasil masuk)
-  static UserModel? loginUser({
+  // Autentikasi Login Akun dari SQLite
+  static Future<UserModel?> loginUser({
     required String emailOrPhone,
     required String password,
-  }) {
-    try {
-      UserModel matchedUser = _userDatabase.firstWhere(
-        (user) =>
-            (user.email.toLowerCase() == emailOrPhone.toLowerCase() ||
-                user.phone == emailOrPhone) &&
-            user.password == password,
-      );
+  }) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'users',
+      where: '(LOWER(email) = ? OR phone = ?) AND password = ?',
+      whereArgs: [emailOrPhone.toLowerCase(), emailOrPhone, password],
+    );
+
+    if (maps.isNotEmpty) {
+      UserModel matchedUser = UserModel.fromMap(maps.first);
       currentUser = matchedUser; // Set user aktif jika akun terdaftar
       return matchedUser;
-    } catch (_) {
-      currentUser = null; // Akun tidak terdaftar / password salah -> tetap null
+    } else {
+      currentUser = null;
       return null;
     }
   }
 
-  // Perbarui Data Profil User Aktif
-  static void updateCurrentUser({
+  // Perbarui Data Profil User Aktif di SQLite
+  static Future<void> updateCurrentUser({
     required String name,
     required String email,
     required String phone,
     required String address,
     String? photoPath,
     bool isClearPhoto = false,
-  }) {
+  }) async {
     if (currentUser == null) return;
 
-    int index = _userDatabase.indexWhere((u) => u.id == currentUser!.id);
+    final db = await database;
     UserModel updatedUser = UserModel(
       id: currentUser!.id,
       name: name,
@@ -90,19 +131,28 @@ class UserDbHelper {
       photoPath: isClearPhoto ? null : (photoPath ?? currentUser!.photoPath),
     );
 
-    if (index != -1) {
-      _userDatabase[index] = updatedUser;
-    }
+    await db.update(
+      'users',
+      updatedUser.toMap(),
+      where: 'id = ?',
+      whereArgs: [currentUser!.id],
+    );
+
     currentUser = updatedUser;
   }
 
-  // Hapus Akun
-  static bool deleteUser(String id) {
-    int initialLength = _userDatabase.length;
-    _userDatabase.removeWhere((user) => user.id == id);
+  // Hapus Akun dari SQLite
+  static Future<bool> deleteUser(String id) async {
+    final db = await database;
+    int count = await db.delete(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
     if (currentUser?.id == id) {
       currentUser = null;
     }
-    return _userDatabase.length < initialLength;
+    return count > 0;
   }
 }

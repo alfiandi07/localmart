@@ -41,29 +41,37 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 600));
+    try {
+      await Future.delayed(const Duration(milliseconds: 600));
 
-    UserModel? user = UserDbHelper.loginUser(
-      emailOrPhone: inputEmail,
-      password: inputPass,
-    );
-
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (user != null) {
-      _showSnackBar('Selamat Datang kembali, ${user.name}!');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const BottomNav()),
+      UserModel? user = await UserDbHelper.loginUser(
+        emailOrPhone: inputEmail,
+        password: inputPass,
       );
-    } else {
-      _showSnackBar(
-        'Email atau kata sandi salah. Silakan coba lagi!',
-        isError: true,
-      );
+
+      if (!mounted) return;
+
+      if (user != null) {
+        _showSnackBar('Selamat Datang kembali, ${user.name}!');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BottomNav()),
+        );
+      } else {
+        _showSnackBar(
+          'Email atau kata sandi salah. Silakan coba lagi!',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showSnackBar('Terjadi kesalahan: $e', isError: true);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
