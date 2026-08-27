@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:localmart/Day_20/Constants/app_color.dart';
-import 'package:localmart/Day_20/Constants/app_images.dart';
+import 'package:localmart/Local_mart/Constants/app_color.dart';
+import 'package:localmart/Local_mart/Constants/app_images.dart';
 
 class Testday20 extends StatelessWidget {
   const Testday20({super.key});
